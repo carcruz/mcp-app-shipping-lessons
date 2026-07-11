@@ -1,6 +1,6 @@
 ---
 name: mcp-app-shipping-lessons
-description: Lessons for hardening, debugging, and deploying MCP Apps (tools with interactive iframe UIs) once a prototype already exists. Covers sandboxed-iframe data fetching via CSP instead of server-side prefetch relays, why external links need a host RPC call instead of raw anchor tags, a reuse-vs-stub decision framework for widget UI components, and a verified container deploy runbook. Use this whenever debugging why an MCP App widget can't fetch data, can't open a link, looks visually "off" from the rest of an app, or when building/deploying the server as a container. Does not cover initial scaffolding — pair with create-mcp-app, add-app-to-server, convert-web-app, or migrate-oai-app for that.
+description: Lessons for hardening and debugging MCP Apps (tools with interactive iframe UIs) once a prototype already exists. Covers sandboxed-iframe data fetching via CSP instead of server-side prefetch relays, why external links need a host RPC call instead of raw anchor tags, a reuse-vs-stub decision framework for widget UI components, and container-build gotchas. Use this whenever debugging why an MCP App widget can't fetch data, can't open a link, looks visually "off" from the rest of an app, or when building the server as a container image. Does not cover initial scaffolding — pair with create-mcp-app, add-app-to-server, convert-web-app, or migrate-oai-app for that.
 ---
 
 # MCP App shipping lessons
@@ -15,7 +15,7 @@ Practical, field-tested lessons from taking an MCP App widget server from protot
 
 3. **Widget UI looks subtly different from the "real" app it's borrowing components from** (wrong colors, missing icons, broken styling) → read `references/component-reuse.md` for the decision framework on when to reuse a real component vs. keep a stub, plus a specific import-path gotcha that causes "I fixed this already" bugs.
 
-4. **Building/deploying the server as a container** → read `references/cloud-run-deploy.md` for a verified build → push → deploy sequence and the gotchas that cost real debugging time (silent duplicate-service creation, build-context location, session affinity).
+4. **Building the server as a container image** → read `references/docker-build.md` for the client-bundle/build-context/platform gotchas that cost real debugging time.
 
 ## Core mental model
 

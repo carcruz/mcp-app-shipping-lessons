@@ -9,7 +9,7 @@ It's **complementary, not a replacement**, for scaffolding-focused skills like `
 - Why sandboxed widget iframes usually don't need a server-side data relay — and the CSP fields (`connectDomains`, `resourceDomains`) that make direct fetch work
 - Host-integration traps: why raw `<a target="_blank">` / `window.open()` silently fail inside an MCP App host, and the RPC method that actually works
 - A decision framework for whether to reuse a real UI component (with a thin adapter) or keep a stub, plus a specific gotcha around components that bypass your stub via relative imports
-- A verified, generalized runbook for building and deploying an MCP App server as a container to a cloud run service, including gotchas that cost real debugging time
+- Container-build gotchas for an MCP App server: build-context location in a monorepo, stale/missing client bundles, and platform mismatches
 
 ## Install
 
