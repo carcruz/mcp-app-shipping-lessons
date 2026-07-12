@@ -1,6 +1,6 @@
 ---
 name: mcp-app-shipping-lessons
-description: Lessons for hardening and debugging MCP Apps (tools with interactive iframe UIs) once a prototype already exists. Covers sandboxed-iframe data fetching via CSP instead of server-side prefetch relays, why external links need a host RPC call instead of raw anchor tags, a reuse-vs-stub decision framework for widget UI components, and container-build gotchas. Use this whenever debugging why an MCP App widget can't fetch data, can't open a link, looks visually "off" from the rest of an app, or when building the server as a container image. Does not cover initial scaffolding — pair with create-mcp-app, add-app-to-server, convert-web-app, or migrate-oai-app for that.
+description: Lessons for hardening and debugging MCP Apps (tools with interactive iframe UIs) once a prototype already exists. Covers sandboxed-iframe data fetching via CSP instead of server-side prefetch relays, why external links need a host RPC call instead of raw anchor tags, a reuse-vs-stub decision framework for widget UI components (including bundler-level import interception and safe stub return values), container-build gotchas, and auditing whether a multi-widget migration is actually complete. Use this whenever debugging why an MCP App widget can't fetch data, can't open a link, looks visually "off" from the rest of an app, silently does nothing for some inputs, when building the server as a container image, or when checking whether "all the widgets" really are all of them. Does not cover initial scaffolding — pair with create-mcp-app, add-app-to-server, convert-web-app, or migrate-oai-app for that.
 ---
 
 # MCP App shipping lessons
@@ -13,9 +13,11 @@ Practical, field-tested lessons from taking an MCP App widget server from protot
 
 2. **A link/button inside the widget silently does nothing** (works in a normal browser tab, dead inside the MCP host) → read `references/host-integration.md`. This is almost always a raw DOM API (`<a target="_blank">`, `window.open()`) that the sandbox doesn't grant, when a host RPC method exists for it.
 
-3. **Widget UI looks subtly different from the "real" app it's borrowing components from** (wrong colors, missing icons, broken styling) → read `references/component-reuse.md` for the decision framework on when to reuse a real component vs. keep a stub, plus a specific import-path gotcha that causes "I fixed this already" bugs.
+3. **Widget UI looks subtly different from the "real" app it's borrowing components from, or a feature silently does nothing/renders empty for every input** (wrong colors, missing icons, broken styling, a hook that never surfaces data) → read `references/component-reuse.md` for the decision framework on when to reuse a real component vs. keep a stub, three variants of an import-path gotcha that causes "I fixed this already" bugs (and the bundler-level fix that handles all three at once), how to design a stub's return value so it doesn't silently gate a feature off, and how to verify a stub fix actually reached the built bundle.
 
 4. **Building the server as a container image** → read `references/docker-build.md` for the client-bundle/build-context/platform gotchas that cost real debugging time.
+
+5. **Checking whether a multi-widget migration (one MCP tool per feature of a larger app) is actually complete** → read `references/migration-completeness.md`. A hand-maintained "excluded features" list drifts out of date in both directions — stale exclusion reasons, and similar-looking features wrongly assumed to be "already covered" by each other. Diff against the source app's own feature list programmatically instead of trusting the doc.
 
 ## Core mental model
 
