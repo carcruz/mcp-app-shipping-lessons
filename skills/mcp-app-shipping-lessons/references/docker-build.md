@@ -27,3 +27,17 @@ Note the context is the trailing `.` — it's relative to wherever you run the c
 ## 3. Watch for platform mismatches
 
 `--platform linux/amd64` matters if you're building on Apple Silicon (arm64) and the image is meant to run somewhere x86-only. Without it, `docker buildx` will happily build a native arm64 image that builds fine, runs fine locally, and then fails to start (or silently gets emulated at a real performance cost) wherever it's deployed. If a container "works on my machine" but misbehaves after deploy, check the platform flag before anything else.
+
+## 4. Every runtime-read file needs its own `COPY` line — not just source and bundles
+
+A Dockerfile's `COPY` lines are a hand-maintained list, and nothing keeps that list in sync with what the server actually reads off disk at request time. It's easy to remember to `COPY` the server's source and the built widget bundles, and forget a smaller runtime dependency added later — a config file, a per-environment script, a template, anything read via `readFile`/`require` outside of `node_modules` and the two obvious directories.
+
+This bug is nasty specifically because of *when* it surfaces: the image builds cleanly (Docker doesn't know or care that a runtime `readFile` call will 404), the container starts and passes health checks (nothing touches the missing file at startup), and it only breaks the exact request path that reads that file — which, for an MCP App server, usually means the resource-read handler that serves the widget's HTML shell, not the tool-call handler. So `tools/list` and `tools/call` succeed, and the failure looks like a connectivity/session problem in the host (see `host-error-diagnosis.md`) rather than a missing file, because the host only sees a generic JSON-RPC error, not the underlying `ENOENT`.
+
+When a feature is added that makes the server read a *new* file or directory at runtime (a profile/config script, a template, anything outside the paths the Dockerfile already copies), treat updating the Dockerfile as part of that change, not a separate deploy concern. To verify a rebuilt image actually contains everything it needs before pushing:
+
+```bash
+docker run --rm --entrypoint sh <image>:<tag> -c "find / -iname '<expected-file-or-dir>' 2>/dev/null"
+```
+
+An empty result means the Dockerfile is missing a `COPY` line for it — fix that before pushing, not after a user hits the broken code path in production.

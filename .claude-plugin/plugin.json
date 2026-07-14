@@ -1,6 +1,6 @@
 {
   "name": "mcp-app-shipping-lessons",
-  "description": "Hard-won lessons for hardening MCP Apps for production: sandboxed-iframe CSP data fetching, host-integration traps like external links, a reuse-vs-stub decision framework for widget UI, and container-build gotchas. Complements the scaffolding-focused create-mcp-app / add-app-to-server / convert-web-app / migrate-oai-app skills.",
+  "description": "Hard-won lessons for hardening MCP Apps for production: sandboxed-iframe CSP data fetching, host-integration traps like external links, a reuse-vs-stub decision framework for widget UI, container-build/deploy gotchas, and diagnosing generic host connectivity errors. Complements the scaffolding-focused create-mcp-app / add-app-to-server / convert-web-app / migrate-oai-app skills.",
   "author": {
     "name": "Carlos Cruz"
   }
